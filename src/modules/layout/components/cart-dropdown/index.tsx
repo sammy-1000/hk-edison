@@ -8,7 +8,7 @@ import {
 } from "@headlessui/react"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
-import { Button } from "@medusajs/ui"
+import { Button } from "@lib/components/ui/button"
 import DeleteButton from "@modules/common/components/delete-button"
 import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
@@ -16,6 +16,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Thumbnail from "@modules/products/components/thumbnail"
 import { usePathname } from "next/navigation"
 import { Fragment, useEffect, useRef, useState } from "react"
+import { ShoppingCartIcon } from "lucide-react"
 
 const CartDropdown = ({
   cart: cartState,
@@ -81,11 +82,16 @@ const CartDropdown = ({
     >
       <Popover className="relative h-full">
         <PopoverButton className="h-full">
-          <LocalizedClientLink
-            className="hover:text-ui-fg-base"
-            href="/cart"
-            data-testid="nav-cart-link"
-          >{`Cart (${totalItems})`}</LocalizedClientLink>
+          <Button asChild variant="default" size="sm" className="text-sm">
+            <LocalizedClientLink
+              className="hover:text-ui-fg-base"
+              href="/cart"
+              data-testid="nav-cart-link"
+            >
+              <ShoppingCartIcon className="me-2" size={16} />
+              {`Cart (${totalItems})`}
+            </LocalizedClientLink>
+          </Button>
         </PopoverButton>
         <Transition
           show={cartDropdownOpen}
@@ -133,7 +139,7 @@ const CartDropdown = ({
                         <div className="flex flex-col justify-between flex-1">
                           <div className="flex flex-col flex-1">
                             <div className="flex items-start justify-between">
-                              <div className="flex flex-col overflow-ellipsis whitespace-nowrap mr-4 w-[180px]">
+                              <div className="flex flex-col text-ellipsis whitespace-nowrap mr-4 w-[180px]">
                                 <h3 className="text-base-regular overflow-hidden text-ellipsis">
                                   <LocalizedClientLink
                                     href={`/products/${item.product_handle}`}
@@ -194,7 +200,6 @@ const CartDropdown = ({
                   <LocalizedClientLink href="/cart" passHref>
                     <Button
                       className="w-full"
-                      size="large"
                       data-testid="go-to-cart-button"
                     >
                       Go to cart

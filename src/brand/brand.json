@@ -1,0 +1,18 @@
+{
+    "name": "Hakizimana Store",
+    "short_name": "HK-STORE",
+    "tagline": "Best Shoes in The village",
+    "logos": {
+        "light": "/logo/light.svg",
+        "dark": "/logo/dark.svg"
+    },
+    "favicon": "/favicon.ico",
+    "social": {
+        "facebook": "https://facebook.com/myshop",
+        "instagram": "https://instagram.com/myshop"
+    },
+    "contact": {
+        "email": "support@myshop.com",
+        "phone": "+1234567890"
+    }
+}
