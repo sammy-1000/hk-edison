@@ -16,17 +16,42 @@ export default function CategoryCard({ category }: CategoryCardProps) {
   const productCount = publishedProducts.length
   const categoryHandle = category.handle || ""
 
+  // Get category image: prefer category thumbnail, then first published product's thumbnail/image
+  const getCategoryImage = () => {
+    // First try category thumbnail
+    if (category.thumbnail) {
+      return category.thumbnail
+    }
+    
+    // Then try first published product's thumbnail
+    const firstProduct = publishedProducts[0]
+    if (firstProduct?.thumbnail) {
+      return firstProduct.thumbnail
+    }
+    
+    // Then try first published product's first image
+    if (firstProduct?.images?.[0]?.url) {
+      return firstProduct.images[0].url
+    }
+    
+    // No image available
+    return null
+  }
+
+  const categoryImage = getCategoryImage()
+
   return (
     <LocalizedClientLink href={`/categories/${categoryHandle}`}>
       <Card className="group cursor-pointer overflow-hidden py-0 transition-all duration-500 hover:shadow-lg">
         <div className="relative aspect-[5/4] overflow-hidden">
           {/* Category Image or Placeholder */}
-          {category.thumbnail ? (
+          {categoryImage ? (
             <>
               <img
-                src={category.thumbnail}
+                src={categoryImage}
                 alt={category.name}
                 className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
             </>
