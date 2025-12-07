@@ -3,21 +3,11 @@
 // src/modules/home/components/hero/components/hero-header/index.tsx
 import { Button } from '@lib/components/ui/button'
 import { Badge } from '@lib/components/ui/badge'
-import { Input } from '@lib/components/ui/input'
-import { Search, ArrowRight, TrendingUp, ShoppingBag } from 'lucide-react'
+import { ArrowRight, TrendingUp, ShoppingBag } from 'lucide-react'
+import ProductSearch from '@modules/common/components/product-search'
+import LocalizedClientLink from '@modules/common/components/localized-client-link'
 
-interface HeroHeaderProps {
-    searchQuery: string
-    setSearchQuery: (query: string) => void
-}
-
-export default function HeroHeader({ searchQuery, setSearchQuery }: HeroHeaderProps) {
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault()
-        // TODO: Implement search functionality
-        console.log('Searching for:', searchQuery)
-    }
-
+export default function HeroHeader() {
     return (
         <header className="space-y-8">
             <Badge variant="outline" className="rounded-full px-4 py-2">
@@ -34,43 +24,30 @@ export default function HeroHeader({ searchQuery, setSearchQuery }: HeroHeaderPr
                 for those who appreciate quality and style.
             </p>
 
-            <form onSubmit={handleSearch} className="relative max-w-md">
-                <Input
-                    type="search"
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-14 rounded-full pe-4 pl-12 text-lg"
-                    aria-label="Search products"
-                />
-                <Search className="text-muted-foreground absolute start-4 top-1/2 size-5 -translate-y-1/2" />
-                <Button
-                    type="submit"
-                    size="lg"
-                    className="absolute end-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full px-6"
-                >
-                    Search
-                </Button>
-            </form>
+            <div className="max-w-md">
+                <ProductSearch variant="hero" />
+            </div>
 
             <div className="flex gap-4">
-                <Button
-                    size="lg"
-                    className="cursor-pointer gap-2 rounded-full px-8"
-                    onClick={() => window.location.href = '/store'}
-                >
-                    Shop Now
-                    <ArrowRight className="size-4" />
-                </Button>
-                <Button
-                    size="lg"
-                    variant="outline"
-                    className="cursor-pointer gap-2 rounded-full px-8"
-                    onClick={() => window.location.href = '/store'}
-                >
-                    <ShoppingBag className="size-4" />
-                    View Catalog
-                </Button>
+                <LocalizedClientLink href="/store">
+                    <Button
+                        size="lg"
+                        className="cursor-pointer gap-2 rounded-full px-8"
+                    >
+                        Shop Now
+                        <ArrowRight className="size-4" />
+                    </Button>
+                </LocalizedClientLink>
+                <LocalizedClientLink href="/categories">
+                    <Button
+                        size="lg"
+                        variant="outline"
+                        className="cursor-pointer gap-2 rounded-full px-8"
+                    >
+                        <ShoppingBag className="size-4" />
+                        View Catalog
+                    </Button>
+                </LocalizedClientLink>
             </div>
         </header>
     )

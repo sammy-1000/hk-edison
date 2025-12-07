@@ -2,22 +2,12 @@
 
 // src/modules/home/components/hero/components/empty-hero/index.tsx
 import { Button } from '@lib/components/ui/button'
-import { Input } from '@lib/components/ui/input'
 import { Badge } from '@lib/components/ui/badge'
-import { Search, Package, TrendingUp } from 'lucide-react'
+import { Package, TrendingUp } from 'lucide-react'
+import ProductSearch from '@modules/common/components/product-search'
+import LocalizedClientLink from '@modules/common/components/localized-client-link'
 
-interface EmptyHeroProps {
-    searchQuery: string
-    setSearchQuery: (query: string) => void
-}
-
-export default function EmptyHero({ searchQuery, setSearchQuery }: EmptyHeroProps) {
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault()
-        // TODO: Implement search functionality
-        console.log('Searching for:', searchQuery)
-    }
-
+export default function EmptyHero() {
     return (
         <div className="flex min-h-[600px] flex-col items-center justify-center text-center">
             <div className="mx-auto max-w-2xl space-y-8">
@@ -43,34 +33,20 @@ export default function EmptyHero({ searchQuery, setSearchQuery }: EmptyHeroProp
                     </p>
                 </div>
 
-                <form onSubmit={handleSearch} className="relative mx-auto max-w-md">
-                    <Input
-                        type="search"
-                        placeholder="Search for products..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="h-14 rounded-full pe-4 pl-12 text-lg"
-                        aria-label="Search products"
-                    />
-                    <Search className="text-muted-foreground absolute start-4 top-1/2 size-5 -translate-y-1/2" />
-                    <Button
-                        type="submit"
-                        size="lg"
-                        className="absolute end-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full px-6"
-                    >
-                        Search
-                    </Button>
-                </form>
+                <div className="mx-auto max-w-md">
+                    <ProductSearch variant="hero" />
+                </div>
 
                 <div className="flex justify-center gap-4">
-                    <Button
-                        size="lg"
-                        variant="outline"
-                        className="cursor-pointer rounded-full px-8"
-                        onClick={() => window.location.href = '/store'}
-                    >
-                        Browse All Products
-                    </Button>
+                    <LocalizedClientLink href="/store">
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            className="cursor-pointer rounded-full px-8"
+                        >
+                            Browse All Products
+                        </Button>
+                    </LocalizedClientLink>
                 </div>
             </div>
         </div>

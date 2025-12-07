@@ -43,11 +43,12 @@ const Payment = ({
   const setPaymentMethod = async (method: string) => {
     setError(null)
     setSelectedPaymentMethod(method)
-    if (isStripeFunc(method)) {
-      await initiatePaymentSession(cart, {
-        provider_id: method,
-      })
-    }
+    // Initialize payment session for both Stripe and manual payments
+    await initiatePaymentSession(cart, {
+      provider_id: method,
+    }).catch((err) => {
+      setError(err.message)
+    })
   }
 
   const paidByGiftcard =

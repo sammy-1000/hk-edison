@@ -8,7 +8,7 @@ import { isManual } from "@lib/constants"
 import SkeletonCardDetails from "@modules/skeletons/components/skeleton-card-details"
 import { CardElement } from "@stripe/react-stripe-js"
 import { StripeCardElementOptions } from "@stripe/stripe-js"
-import PaymentTest from "../payment-test"
+import PaymentContactInfo from "../payment-contact-info"
 import { StripeContext } from "../payment-wrapper/stripe-wrapper"
 
 type PaymentContainerProps = {
@@ -47,16 +47,13 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
           <Text className="text-base-regular">
             {paymentInfoMap[paymentProviderId]?.title || paymentProviderId}
           </Text>
-          {isManual(paymentProviderId) && isDevelopment && (
-            <PaymentTest className="hidden small:block" />
-          )}
         </div>
         <span className="justify-self-end text-ui-fg-base">
           {paymentInfoMap[paymentProviderId]?.icon}
         </span>
       </div>
-      {isManual(paymentProviderId) && isDevelopment && (
-        <PaymentTest className="small:hidden text-[10px]" />
+      {isManual(paymentProviderId) && selectedPaymentOptionId === paymentProviderId && (
+        <PaymentContactInfo />
       )}
       {children}
     </RadioGroupOption>
