@@ -63,23 +63,29 @@ export const listProducts = async ({
           offset,
           region_id: region?.id,
           fields:
-            "*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags",
+            "*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags,status,id,title,handle,thumbnail,images",
           ...queryParams,
         },
         headers,
         next,
-        cache: "force-cache",
+        cache: "no-store",
       }
     )
     .then(({ products, count }) => {
+      // Filter to ensure only published products (exclude rejected, draft, proposed)
+      // Only include products with explicit "published" status
+      const publishedProducts = products.filter(
+        (product) => product.status === "published"
+      )
+
       const nextPage = count > offset + limit ? pageParam + 1 : null
 
-      console.log("Fetched products:", products.length, "Count:", count)
+      console.log("Fetched products:", publishedProducts.length, "Count:", count)
 
       return {
         response: {
-          products,
-          count,
+          products: publishedProducts,
+          count: publishedProducts.length,
         },
         nextPage: nextPage,
         queryParams,
@@ -119,7 +125,13 @@ export const listProductsWithSort = async ({
     countryCode,
   })
 
-  const sortedProducts = sortProducts(products, sortBy)
+  // Filter out any rejected, draft, or proposed products
+  // Only include products with explicit "published" status
+  const publishedProducts = products.filter(
+    (product) => product.status === "published"
+  )
+
+  const sortedProducts = sortProducts(publishedProducts, sortBy)
 
   const pageParam = (page - 1) * limit
 
@@ -130,7 +142,7 @@ export const listProductsWithSort = async ({
   return {
     response: {
       products: paginatedProducts,
-      count,
+      count: publishedProducts.length,
     },
     nextPage,
     queryParams,

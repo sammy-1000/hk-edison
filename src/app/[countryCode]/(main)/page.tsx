@@ -10,6 +10,7 @@ import HeroSkeleton from '@modules/home/components/hero/hero-skeleton'
 
 import StorefrontHero2 from "@modules/home/components/hero"
 import BrandsTemplate from "@modules/brands/templates"
+import { AuroraBackground } from "components/ui/shadcn-io/aurora-background"
 
 export const metadata: Metadata = {
   title: brandData.name,
@@ -35,7 +36,9 @@ export default async function Home(props: {
 
   return (
     <>
-      <BrandsTemplate />
+      <AuroraBackground>
+        <BrandsTemplate />
+      </AuroraBackground>
       <Suspense fallback={
         <section className="relative bg-gradient-to-b from-background to-accent/20">
           <div className="relative container mx-auto px-4 py-16 md:px-8 lg:px-12 lg:py-20">

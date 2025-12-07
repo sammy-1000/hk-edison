@@ -7,6 +7,10 @@ import { StoreRegion } from "@medusajs/types"
 import CategoryTemplate from "@modules/categories/templates"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
+// Force dynamic rendering to disable static generation and caching
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 type Props = {
   params: Promise<{ category: string[]; countryCode: string }>
   searchParams: Promise<{
@@ -15,32 +19,33 @@ type Props = {
   }>
 }
 
-export async function generateStaticParams() {
-  const product_categories = await listCategories()
-
-  if (!product_categories) {
-    return []
-  }
-
-  const countryCodes = await listRegions().then((regions: StoreRegion[]) =>
-    regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat()
-  )
-
-  const categoryHandles = product_categories.map(
-    (category: any) => category.handle
-  )
-
-  const staticParams = countryCodes
-    ?.map((countryCode: string | undefined) =>
-      categoryHandles.map((handle: any) => ({
-        countryCode,
-        category: [handle],
-      }))
-    )
-    .flat()
-
-  return staticParams
-}
+// Disable static generation - commented out to force dynamic rendering
+// export async function generateStaticParams() {
+//   const product_categories = await listCategories()
+//
+//   if (!product_categories) {
+//     return []
+//   }
+//
+//   const countryCodes = await listRegions().then((regions: StoreRegion[]) =>
+//     regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat()
+//   )
+//
+//   const categoryHandles = product_categories.map(
+//     (category: any) => category.handle
+//   )
+//
+//   const staticParams = countryCodes
+//     ?.map((countryCode: string | undefined) =>
+//       categoryHandles.map((handle: any) => ({
+//         countryCode,
+//         category: [handle],
+//       }))
+//     )
+//     .flat()
+//
+//   return staticParams
+// }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params

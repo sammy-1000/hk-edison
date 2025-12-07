@@ -6,7 +6,7 @@ import { ShoppingBag } from "lucide-react"
 import Link from "next/link"
 
 export default async function BrandsList() {
-    const brands = await listBrands({ limit: 12 })
+    const brands = await listBrands({ limit: 6 })
 
     if (!brands || brands.length === 0) {
         return (
@@ -26,7 +26,8 @@ export default async function BrandsList() {
             </div>
 
             {/* Call to Action */}
-            {brands.length >= 12 && (
+            {console.log("brands are " + brands.length)}
+            {brands.length >= 6 && (
                 <div className="mt-12 text-center">
                     <Link href="/brands/all">
                         <Button size="lg" className="cursor-pointer gap-2">
