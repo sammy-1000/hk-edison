@@ -164,15 +164,24 @@ const ShippingAddress = ({
           required
           data-testid="shipping-city-input"
         />
-        <CountrySelect
-          name="shipping_address.country_code"
-          autoComplete="country"
-          region={cart?.region}
-          value={formData["shipping_address.country_code"]}
-          onChange={handleChange}
-          required
-          data-testid="shipping-country-select"
-        />
+        <div className="flex flex-col w-full">
+          <label
+            htmlFor="shipping_address.country_code"
+            className="mb-2 txt-compact-medium-plus text-ui-fg-base"
+          >
+            Country
+            <span className="text-rose-500">*</span>
+          </label>
+          <CountrySelect
+            name="shipping_address.country_code"
+            autoComplete="country"
+            region={cart?.region}
+            value={formData["shipping_address.country_code"]}
+            onChange={handleChange}
+            required
+            data-testid="shipping-country-select"
+          />
+        </div>
         <Input
           label="State / Province"
           name="shipping_address.province"

@@ -1,4 +1,4 @@
-import { Label } from "@medusajs/ui"
+import { Label, clx } from "@medusajs/ui"
 import React, { useEffect, useImperativeHandle, useState } from "react"
 
 import Eye from "@modules/common/icons/eye"
@@ -51,10 +51,16 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <label
             htmlFor={name}
             onClick={() => inputRef.current?.focus()}
-            className="flex items-center justify-center mx-3 px-1 transition-all absolute duration-300 top-3 -z-1 origin-0 text-ui-fg-subtle"
+            className={clx(
+              "flex items-center mx-3 px-1 transition-all absolute duration-300 origin-0 pointer-events-none",
+              {
+                "top-3 z-10 text-ui-fg-subtle": !props.value || props.value === "",
+                "top-0.5 text-xs scale-90 z-10 bg-ui-bg-field px-1 text-ui-fg-subtle": props.value && props.value !== "",
+              }
+            )}
           >
             {label}
-            {required && <span className="text-rose-500">*</span>}
+            {required && <span className="text-rose-500 ml-1">*</span>}
           </label>
           {type === "password" && (
             <button

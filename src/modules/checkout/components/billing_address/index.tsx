@@ -81,15 +81,24 @@ const BillingAddress = ({ cart }: { cart: HttpTypes.StoreCart | null }) => {
           value={formData["billing_address.city"]}
           onChange={handleChange}
         />
-        <CountrySelect
-          name="billing_address.country_code"
-          autoComplete="country"
-          region={cart?.region}
-          value={formData["billing_address.country_code"]}
-          onChange={handleChange}
-          required
-          data-testid="billing-country-select"
-        />
+        <div className="flex flex-col w-full">
+          <label
+            htmlFor="billing_address.country_code"
+            className="mb-2 txt-compact-medium-plus text-ui-fg-base"
+          >
+            Country
+            <span className="text-rose-500">*</span>
+          </label>
+          <CountrySelect
+            name="billing_address.country_code"
+            autoComplete="country"
+            region={cart?.region}
+            value={formData["billing_address.country_code"]}
+            onChange={handleChange}
+            required
+            data-testid="billing-country-select"
+          />
+        </div>
         <Input
           label="State / Province"
           name="billing_address.province"
