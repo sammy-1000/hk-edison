@@ -9,7 +9,9 @@
     "favicon": "/favicon.ico",
     "social": {
         "facebook": "https://facebook.com/myshop",
-        "instagram": "https://instagram.com/myshop"
+        "instagram": "https://instagram.com/myshop",
+        "twitter": "",
+        "linkedin": ""
     },
     "contact": {
         "email": "support@myshop.com",
