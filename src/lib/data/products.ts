@@ -63,7 +63,7 @@ export const listProducts = async ({
           offset,
           region_id: region?.id,
           fields:
-            "*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags,status,id,title,handle,thumbnail,images",
+            "*variants,*variants.calculated_price,*variants.options,*variants.options.option,*variants.options.value,+variants.inventory_quantity,*variants.manage_inventory,*variants.allow_backorder,*options,*options.values,*images,status,id,title,handle,thumbnail,description,metadata,tags,collection_id,created_at",
           ...queryParams,
         },
         headers,
@@ -72,20 +72,32 @@ export const listProducts = async ({
       }
     )
     .then(({ products, count }) => {
-      // Filter to ensure only published products (exclude rejected, draft, proposed)
-      // Only include products with explicit "published" status
-      const publishedProducts = products.filter(
-        (product) => product.status === "published"
-      )
+      // For single product fetches (by handle or id), don't filter by status
+      // For list fetches, filter to only published products
+      const isSingleProductFetch = queryParams?.handle || (queryParams?.id && Array.isArray(queryParams.id) && queryParams.id.length === 1)
+      
+      let filteredProducts = products
+      if (!isSingleProductFetch) {
+        // Filter to ensure only published products (exclude rejected, draft, proposed)
+        // Only include products with explicit "published" status
+        filteredProducts = products.filter(
+          (product) => product.status === "published"
+        )
+      } else {
+        // For single product, only filter if status is explicitly rejected
+        filteredProducts = products.filter(
+          (product) => !product.status || product.status !== "rejected"
+        )
+      }
 
       const nextPage = count > offset + limit ? pageParam + 1 : null
 
-      console.log("Fetched products:", publishedProducts.length, "Count:", count)
+      console.log("Fetched products:", filteredProducts.length, "Count:", count)
 
       return {
         response: {
-          products: publishedProducts,
-          count: publishedProducts.length,
+          products: filteredProducts,
+          count: filteredProducts.length,
         },
         nextPage: nextPage,
         queryParams,
