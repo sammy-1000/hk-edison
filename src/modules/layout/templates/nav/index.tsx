@@ -1,9 +1,7 @@
-import { Suspense, useId } from "react"
-import { SearchIcon } from "lucide-react"
+import { Suspense } from "react"
 
 import Logo from "@lib/components/navbar-components/logo"
 import { Button } from "@lib/components/ui/button"
-import { Input } from "@lib/components/ui/input"
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -19,6 +17,7 @@ import {
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import SideMenu from "@modules/layout/components/side-menu"
+import ConditionalSearch from "@modules/layout/components/conditional-search"
 
 import { listRegions } from "@lib/data/regions"
 import { StoreRegion } from "@medusajs/types"
@@ -70,8 +69,8 @@ export default async function Nav() {
                 </NavigationMenuList>
               </NavigationMenu>
 
-              {/* Search bar */}
-              <SearchBar />
+              {/* Search bar with auto-suggestions (hidden on store page) */}
+              <ConditionalSearch />
             </div>
           </div>
 
@@ -107,26 +106,6 @@ export default async function Nav() {
           </div>
         </div>
       </header>
-    </div>
-  )
-}
-
-/** ------------------------------
- *  Search Bar Component
- * ------------------------------ */
-function SearchBar() {
-  const id = useId()
-  return (
-    <div className="relative">
-      <Input
-        id={id}
-        className="peer h-8 ps-8 pe-2"
-        placeholder="Search..."
-        type="search"
-      />
-      <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-2 text-muted-foreground/80 peer-disabled:opacity-50">
-        <SearchIcon size={16} />
-      </div>
     </div>
   )
 }
