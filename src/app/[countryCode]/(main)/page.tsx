@@ -7,6 +7,7 @@ import brandData from "brand/brand-data"
 import StorefrontHero from '@modules/home/components/hero'
 import { Suspense } from 'react'
 import HeroSkeleton from '@modules/home/components/hero/hero-skeleton'
+import WelcomeSection from "@modules/home/components/welcome-section"
 
 import StorefrontHero2 from "@modules/home/components/hero"
 import BrandsTemplate from "@modules/brands/templates"
@@ -36,6 +37,9 @@ export default async function Home(props: {
 
   return (
     <>
+      {/* Welcome Section - Above Hero */}
+      <WelcomeSection />
+      
       <AuroraBackground>
         <BrandsTemplate />
       </AuroraBackground>

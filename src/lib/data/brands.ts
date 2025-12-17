@@ -43,11 +43,12 @@ export const listBrands = async (query?: Record<string, any>) => {
 }
 
 export const getBrandById = async (brandId: string) => {
+    try {
     const next = {
         ...(await getCacheOptions("brands")),
     }
 
-    return sdk.client
+        const response = await sdk.client
         .fetch<{ brand: StoreBrand }>(
             `/store/brands/${brandId}`,
             {
@@ -55,10 +56,32 @@ export const getBrandById = async (brandId: string) => {
                     fields: "id,name,image_url,products.*",
                 },
                 next,
-                cache: "force-cache",
-            }
-        )
-        .then(({ brand }) => brand)
+                    cache: "no-store", // Use no-store for dynamic data
+                }
+            )
+        
+        if (!response || !response.brand) {
+            console.warn(`Brand with ID ${brandId} not found`)
+            return null
+        }
+
+        return response.brand
+    } catch (error: any) {
+        console.error("Error fetching brand by ID:", error)
+        
+        // Handle different error types
+        if (error?.response?.status === 404 || error?.status === 404) {
+            return null
+        }
+        
+        // Log the full error for debugging
+        if (error?.response) {
+            console.error("Error response:", error.response)
+        }
+        
+        // For other errors, return null instead of throwing to prevent page crashes
+        return null
+    }
 }
 
 export const getBrandByName = async (brandName: string) => {

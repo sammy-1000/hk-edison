@@ -64,7 +64,7 @@ export default function TopBar() {
 
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white transition-transform duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 bg-secondary text-white transition-transform duration-300 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
@@ -74,16 +74,16 @@ export default function TopBar() {
           <div className="flex items-center gap-4">
             {socialLinks.length > 0 ? (
               socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-300 hover:text-white transition-colors"
-                  aria-label={social.name}
-                >
-                  {social.icon}
-                </a>
+              <a
+                key={social.name}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary transition-colors"
+                aria-label={social.name}
+              >
+                {social.icon}
+              </a>
               ))
             ) : isDevelopment ? (
               <span className="text-gray-400 text-xs">
@@ -97,26 +97,26 @@ export default function TopBar() {
             {phoneNumber ? (
               <a
                 href={phoneUrl}
-                className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
+                className="flex items-center text-foreground gap-2 transition-colors"
               >
-                <Phone className="size-4" />
-                <span className="hidden sm:inline">{phoneNumber}</span>
+                <Phone className="size-4 text-foreground" />
+                <span className="hidden text-foreground sm:inline">{phoneNumber}</span>
               </a>
             ) : isDevelopment ? (
-              <span className="text-gray-400 text-xs">No phone configured</span>
+              <span className=" text-foreground text-xs">No phone configured</span>
             ) : null}
             {whatsappNumber ? (
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-md bg-green-600 px-3 py-1.5 text-white hover:bg-green-700 transition-colors"
+                className="flex items-center gap-2 rounded-md  px-3 py-1.5 transition-colors"
               >
-                <MessageCircle className="size-4" />
-                <span className="hidden sm:inline">WhatsApp</span>
+                <MessageCircle className="size-4 text-foreground" />
+                <span className="hidden text-foreground sm:inline">WhatsApp</span>
               </a>
             ) : isDevelopment && !phoneNumber ? (
-              <span className="text-gray-400 text-xs">No WhatsApp configured</span>
+              <span className=" text-foreground text-xs">No WhatsApp configured</span>
             ) : null}
           </div>
         </div>
