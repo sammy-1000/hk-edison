@@ -132,6 +132,30 @@ cp .env.example .env.production
 3. Platform handles deployment
 4. Configure custom domain
 
+#### Dokploy
+
+1. **Connect your repository** to Dokploy
+2. **Set Build Arguments** (required for build-time variables):
+   - In Dokploy, go to your application settings
+   - Navigate to "Build Arguments" or "Docker Build Args"
+   - Add the following build arguments (these are required at build time):
+     ```
+     NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=your_publishable_key
+     NEXT_PUBLIC_BASE_URL=https://your-storefront-url.com
+     NEXT_PUBLIC_DEFAULT_REGION=us
+     ```
+   - Optionally add other `NEXT_PUBLIC_*` variables if needed
+3. **Set Runtime Environment Variables**:
+   - In the "Environment Variables" section, set:
+     ```
+     MEDUSA_BACKEND_URL=https://your-medusa-backend-url.com
+     REVALIDATE_SECRET=your_revalidation_secret
+     ```
+   - Note: `NEXT_PUBLIC_*` variables should be set as build arguments, not runtime env vars
+4. **Deploy** - Dokploy will build and deploy your application
+
+**Important**: `NEXT_PUBLIC_*` variables must be passed as **build arguments** because Next.js embeds them into the JavaScript bundle at build time. Regular environment variables won't work for these during the build process.
+
 ### Environment Variables for Production
 
 Make sure to set these in your deployment platform:
@@ -185,6 +209,8 @@ curl http://localhost:8000
 - Check Node.js version compatibility
 - Verify all dependencies are in package.json
 - Check for missing environment variables during build
+- **For Dokploy**: Ensure `NEXT_PUBLIC_*` variables are set as **build arguments**, not just runtime environment variables
+- Verify build arguments are correctly configured in your deployment platform
 
 ### CORS Errors
 
