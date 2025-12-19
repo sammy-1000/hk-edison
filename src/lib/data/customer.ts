@@ -259,3 +259,135 @@ export const updateCustomerAddress = async (
       return { success: false, error: err.toString() }
     })
 }
+
+export async function requestPasswordReset(
+  _currentState: unknown,
+  formData: FormData
+): Promise<string | null> {
+  const email = formData.get("email") as string
+
+  if (!email) {
+    return "Email is required"
+  }
+
+  try {
+    await sdk.client.fetch("/auth/customer/emailpass/reset-password", {
+      method: "POST",
+      body: {
+        identifier: email,
+      },
+    })
+
+    // If we get here without error, it's a success
+    return null
+  } catch (error: unknown) {
+    // The API returns 201 Created with plain text "Created", but SDK tries to parse as JSON
+    // This causes a JSON parse error, but it's actually a success (201 Created)
+    
+    // Helper function to check if error indicates success (201 Created)
+    const isSuccessResponse = (err: any): boolean => {
+      // Check for SyntaxError (JSON parse error from "Created" response)
+      if (err?.name === "SyntaxError" || err?.constructor?.name === "SyntaxError") {
+        return true
+      }
+      
+      // Check error message/string for JSON parse errors
+      const errorText = `${err?.message || ""} ${err?.toString?.() || ""}`.toLowerCase()
+      if (
+        errorText.includes("is not valid json") ||
+        errorText.includes("unexpected token") ||
+        errorText.includes("created") ||
+        errorText.includes("syntaxerror")
+      ) {
+        return true
+      }
+      
+      // Check for 201 status code
+      if (err?.response?.status === 201 || err?.status === 201) {
+        return true
+      }
+      
+      // Check error body for "Created"
+      if (err?.body && String(err.body).includes("Created")) {
+        return true
+      }
+      
+      return false
+    }
+
+    if (error && typeof error === "object") {
+      const err = error as any
+      
+      // If this is a success response (201 Created), return null
+      if (isSuccessResponse(err)) {
+        return null
+      }
+      
+      // Otherwise, extract and return the error message
+      if (err?.response?.data) {
+        const data = err.response.data
+        return data.message || data.error || (typeof data === "string" ? data : JSON.stringify(data))
+      } else if (err?.response?.status) {
+        return `Error ${err.response.status}: ${err.response.statusText || "Request failed"}`
+      } else if (err?.message) {
+        return err.message
+      }
+    } else if (typeof error === "string") {
+      // Check if string error indicates success
+      const errorLower = error.toLowerCase()
+      if (
+        errorLower.includes("is not valid json") ||
+        errorLower.includes("unexpected token") ||
+        errorLower.includes("created")
+      ) {
+        return null
+      }
+      return error
+    }
+    
+    return "Failed to send reset email. Please try again."
+  }
+}
+
+export async function resetPassword(
+  _currentState: unknown,
+  formData: FormData
+): Promise<string | null> {
+  const token = formData.get("token") as string
+  const email = formData.get("email") as string
+  const password = formData.get("password") as string
+
+  if (!token || !email || !password) {
+    return "Token, email, and password are required"
+  }
+
+  try {
+    await sdk.client.fetch("/auth/customer/emailpass/update", {
+      method: "POST",
+      body: {
+        email: email,
+        password: password,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return null // Success
+  } catch (error: unknown) {
+    // Extract error message
+    if (error && typeof error === "object") {
+      const err = error as any
+      if (err?.response?.data) {
+        const data = err.response.data
+        return data.message || data.error || (typeof data === "string" ? data : JSON.stringify(data))
+      } else if (err?.message) {
+        return err.message
+      }
+    } else if (typeof error === "string") {
+      return error
+    }
+    
+    return "Failed to reset password. The link may have expired."
+  }
+}
