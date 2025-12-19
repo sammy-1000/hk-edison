@@ -18,10 +18,12 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import CartButton from "@modules/layout/components/cart-button"
 import SideMenu from "@modules/layout/components/side-menu"
 import ConditionalSearch from "@modules/layout/components/conditional-search"
+import MobileCartIcon from "@modules/layout/components/mobile-cart-icon"
 
 import { listRegions } from "@lib/data/regions"
 import { StoreRegion } from "@medusajs/types"
 import brandData from "brand/brand-data"
+import { ShoppingCartIcon } from "lucide-react"
 
 // navigation links (can grow later)
 const navigationLinks = [
@@ -71,6 +73,21 @@ export default async function Nav() {
 
               {/* Search bar with auto-suggestions (hidden on store page) */}
               <ConditionalSearch />
+              
+              {/* Mobile Cart Icon - next to search */}
+              <div className="md:hidden">
+                <Suspense
+                  fallback={
+                    <LocalizedClientLink href="/cart" className="relative">
+                      <Button variant="ghost" size="icon" className="rounded-full">
+                        <ShoppingCartIcon className="h-6 w-6 stroke-[2.5]" />
+                      </Button>
+                    </LocalizedClientLink>
+                  }
+                >
+                  <MobileCartIcon />
+                </Suspense>
+              </div>
             </div>
           </div>
 
