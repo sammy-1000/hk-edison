@@ -13,26 +13,54 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-    // Get the first available variant for pricing
+    // Get the first available variant with a price (check all variants, not just those with calculated_price)
     const cheapestVariant = useMemo(() => {
         if (!product.variants?.length) return null
-        return product.variants.reduce((min, variant) => {
-            const minPrice = min?.calculated_price?.calculated_amount || Infinity
-            const variantPrice = variant?.calculated_price?.calculated_amount || Infinity
-            return variantPrice < minPrice ? variant : min
-        })
+        
+        // Find variant with the lowest price, checking all variants
+        const variantsWithPrices = product.variants
+            .map(variant => {
+                const calculatedPrice = variant?.calculated_price
+                const priceAmount = calculatedPrice?.calculated_amount
+                // If calculated_price exists, use it; otherwise check if variant has any price data
+                if (priceAmount != null && priceAmount !== undefined && calculatedPrice) {
+                    return {
+                        variant,
+                        price: priceAmount,
+                        currency: calculatedPrice.currency_code || 'USD'
+                    }
+                }
+                return null
+            })
+            .filter((item): item is { variant: typeof product.variants[0]; price: number; currency: string } => item !== null)
+            .sort((a, b) => a.price - b.price)
+        
+        return variantsWithPrices[0]?.variant || product.variants[0] || null
     }, [product.variants])
 
-    // Format price
+    // Format price - handle all currencies including RWF
     const formattedPrice = useMemo(() => {
-        if (!cheapestVariant?.calculated_price) return 'N/A'
-        const price = cheapestVariant.calculated_price.calculated_amount
-        if (price == null) return 'N/A'
-        const currency = cheapestVariant.calculated_price.currency_code?.toUpperCase() || 'USD'
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: currency,
-        }).format(price)
+        if (!cheapestVariant) return 'N/A'
+        
+        const calculatedPrice = cheapestVariant?.calculated_price
+        if (!calculatedPrice) return 'N/A'
+        
+        const price = calculatedPrice.calculated_amount
+        if (price == null || price === undefined) return 'N/A'
+        
+        // Prices are stored in cents, so divide by 100
+        const priceInCurrency = price / 100
+        const currency = calculatedPrice.currency_code?.toUpperCase() || 'USD'
+        
+        try {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: currency,
+            }).format(priceInCurrency)
+        } catch (error) {
+            // Fallback if currency code is invalid
+            return `${priceInCurrency} ${currency}`
+        }
     }, [cheapestVariant])
 
     // Get product image

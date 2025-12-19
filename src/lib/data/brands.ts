@@ -36,7 +36,7 @@ export const listBrands = async (query?: Record<string, any>) => {
                     ...query,
                 },
                 next,
-                cache: "force-cache",
+                cache: "no-store", // Always fetch live data, no caching
             }
         )
         .then(({ brands }) => brands)
@@ -61,7 +61,7 @@ export const listBrandsWithCount = async (query?: Record<string, any>) => {
                     ...query,
                 },
                 next,
-                cache: "force-cache",
+                cache: "no-store", // Always fetch live data, no caching
             }
         )
         .then((response) => ({
@@ -128,7 +128,7 @@ export const getBrandByName = async (brandName: string) => {
                     name: brandName,
                 },
                 next,
-                cache: "force-cache",
+                cache: "no-store", // Always fetch live data, no caching
             }
         )
         .then(({ brands }) => brands[0])

@@ -107,16 +107,39 @@ export default function ProductSearch({ className = "", variant = "default" }: P
   }
 
   const formatPrice = (product: HttpTypes.StoreProduct) => {
-    const variant = product.variants?.[0]
-    const price = variant?.calculated_price?.calculated_amount
-    const currency = variant?.calculated_price?.currency_code || "USD"
+    if (!product.variants?.length) return "N/A"
+    
+    // Find variant with the lowest price, checking all variants
+    const variantsWithPrices = product.variants
+      .map(variant => {
+        const calculatedPrice = variant?.calculated_price?.calculated_amount
+        if (calculatedPrice != null && calculatedPrice !== undefined) {
+          return {
+            variant,
+            price: calculatedPrice,
+            currency: variant.calculated_price.currency_code
+          }
+        }
+        return null
+      })
+      .filter(Boolean)
+      .sort((a, b) => (a?.price || Infinity) - (b?.price || Infinity))
+    
+    const cheapestVariant = variantsWithPrices[0]?.variant || product.variants[0]
+    const price = cheapestVariant?.calculated_price?.calculated_amount
+    const currency = cheapestVariant?.calculated_price?.currency_code || "USD"
 
-    if (!price) return "N/A"
+    if (!price || price === null || price === undefined) return "N/A"
 
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency.toUpperCase(),
-    }).format(price / 100)
+    try {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: currency.toUpperCase(),
+      }).format(price / 100)
+    } catch (error) {
+      // Fallback if currency code is invalid
+      return `${(price / 100)} ${currency.toUpperCase()}`
+    }
   }
 
   const getProductImage = (product: HttpTypes.StoreProduct) => {
