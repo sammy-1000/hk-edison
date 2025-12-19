@@ -42,6 +42,36 @@ export const listBrands = async (query?: Record<string, any>) => {
         .then(({ brands }) => brands)
 }
 
+export const listBrandsWithCount = async (query?: Record<string, any>) => {
+    const next = {
+        ...(await getCacheOptions("brands")),
+    }
+
+    const limit = query?.limit || 100
+    const offset = query?.offset || 0
+
+    return sdk.client
+        .fetch<StoreBrandsResponse>(
+            "/store/brands",
+            {
+                query: {
+                    fields: "id,name,image_url",
+                    limit,
+                    offset,
+                    ...query,
+                },
+                next,
+                cache: "force-cache",
+            }
+        )
+        .then((response) => ({
+            brands: response.brands,
+            count: response.count || response.brands.length,
+            limit: response.limit,
+            offset: response.offset,
+        }))
+}
+
 export const getBrandById = async (brandId: string) => {
     try {
     const next = {

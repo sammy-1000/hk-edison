@@ -4,13 +4,12 @@ import { getBrandById } from "@lib/data/brands"
 import { listRegions } from "@lib/data/regions"
 import { StoreRegion } from "@medusajs/types"
 import BrandDetailTemplate from "@modules/brands/templates/brand-detail"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
 type Props = {
   params: Promise<{ id: string; countryCode: string }>
   searchParams: Promise<{
     page?: string
-    sortBy?: SortOptions
+    sortBy?: string
   }>
 }
 

@@ -2,17 +2,17 @@ import { Suspense } from "react"
 import Image from "next/image"
 import { StoreBrand } from "@lib/data/brands"
 import { getRegion } from "@lib/data/regions"
-import ProductPreview from "@modules/products/components/product-preview"
+import BrandProductPreview from "@modules/brands/components/product-preview"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
-import RefinementList from "@modules/store/components/refinement-list"
+import BrandRefinementList from "@modules/brands/components/refinement-list"
+import BrandMobileFilterWrapper from "@modules/brands/components/mobile-filter-wrapper"
 import { Pagination } from "@modules/store/components/pagination"
 import { HttpTypes } from "@medusajs/types"
 
 type BrandDetailTemplateProps = {
   brand: StoreBrand
   countryCode: string
-  sortBy?: SortOptions
+  sortBy?: string
   page?: number
 }
 
@@ -30,32 +30,27 @@ export default async function BrandDetailTemplate({
 
   // Get products from brand data and ensure they're properly typed
   // Filter out any products that don't have required fields
-  const products = ((brand.products || []) as HttpTypes.StoreProduct[]).filter(
+  const products = ((brand.products || []) as any[]).filter(
     (product) => product && product.id && product.handle
   )
-  const sort = sortBy || "created_at"
+  const sort = sortBy || "name"
 
-  // Sort products if needed
+  // Sort products - only by name since we don't have price or created_at
   let sortedProducts = products
-  if (sort === "price_asc") {
+  if (sort === "name") {
     sortedProducts = [...products].sort((a, b) => {
-      const priceA = a.variants?.[0]?.calculated_price?.calculated_amount || 0
-      const priceB = b.variants?.[0]?.calculated_price?.calculated_amount || 0
-      return priceA - priceB
+      const nameA = (a.title || "").toLowerCase()
+      const nameB = (b.title || "").toLowerCase()
+      return nameA.localeCompare(nameB)
     })
-  } else if (sort === "price_desc") {
+  } else if (sort === "name_desc") {
     sortedProducts = [...products].sort((a, b) => {
-      const priceA = a.variants?.[0]?.calculated_price?.calculated_amount || 0
-      const priceB = b.variants?.[0]?.calculated_price?.calculated_amount || 0
-      return priceB - priceA
-    })
-  } else if (sort === "created_at") {
-    sortedProducts = [...products].sort((a, b) => {
-      const dateA = a.created_at ? new Date(a.created_at).getTime() : 0
-      const dateB = b.created_at ? new Date(b.created_at).getTime() : 0
-      return dateB - dateA // Newest first
+      const nameA = (a.title || "").toLowerCase()
+      const nameB = (b.title || "").toLowerCase()
+      return nameB.localeCompare(nameA)
     })
   }
+  // For other sort options, just use the original order
 
   // Pagination
   const PRODUCT_LIMIT = 12
@@ -66,8 +61,15 @@ export default async function BrandDetailTemplate({
 
   return (
     <div className="flex flex-col small:flex-row small:items-start gap-6 py-6 content-container">
-      <RefinementList sortBy={sort} />
-      <div className="w-full">
+      {/* Desktop Filters - Hidden on mobile */}
+      <aside className="hidden small:block">
+        <BrandRefinementList sortBy={sort} />
+      </aside>
+
+      <div className="flex-1 w-full">
+        {/* Mobile Filter Button & Drawer Wrapper */}
+        <BrandMobileFilterWrapper sortBy={sort} />
+
         {/* Brand Header */}
         <div className="mb-8">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
@@ -99,7 +101,7 @@ export default async function BrandDetailTemplate({
             <ul className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8">
               {paginatedProducts.map((product) => (
                 <li key={product.id}>
-                  <ProductPreview product={product} region={region} />
+                  <BrandProductPreview product={product} />
                 </li>
               ))}
             </ul>

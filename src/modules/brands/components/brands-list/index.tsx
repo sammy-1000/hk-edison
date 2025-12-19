@@ -4,6 +4,7 @@ import BrandCard from "../brand-card"
 import { Button } from "@lib/components/ui/button"
 import { ShoppingBag } from "lucide-react"
 import Link from "next/link"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 export default async function BrandsList() {
     const brands = await listBrands({ limit: 6 })
@@ -29,12 +30,14 @@ export default async function BrandsList() {
             {console.log("brands are " + brands.length)}
             {brands.length >= 6 && (
                 <div className="mt-12 text-center">
-                    <Link href="/brands/all">
-                        <Button size="lg" className="cursor-pointer gap-2">
-                            <ShoppingBag className="size-5" />
-                            View All Brands
-                        </Button>
-                    </Link>
+                    <LocalizedClientLink href="/brands/"
+                        className="relative z-20"
+                        >
+                            <Button size="lg" className="cursor-pointer gap-2">
+                                <ShoppingBag className="size-5" />
+                                View All Brands
+                            </Button>
+                        </LocalizedClientLink>
                 </div>
             )}
         </>
