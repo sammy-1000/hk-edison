@@ -95,26 +95,16 @@ export default function WelcomeSection() {
             >
               Premium, comfort, quality, and timeless design.
             </TextEffect>
+          </AnimatedGroup>
+          {/* Search Bar (simple fade-in via CSS only) */}
+          <div className="mb-8 flex flex-col items-center justify-center w-full opacity-1 animate-[fadeInUp_0.8s_ease-out_forwards_0.4s] relative z-10">
+            <div className="welcome-search-wrapper w-[90%] max-w-md sm:w-full sm:max-w-lg lg:max-w-xl mx-auto">
+              <ProductSearch variant="hero" />
+            </div>
+          </div>
+          <AnimatedGroup variants={transitionVariants}>
 
-            {/* Search Bar */}
-            <AnimatedGroup
-              variants={{
-                container: {
-                  visible: {
-                    transition: {
-                      staggerChildren: 0.1,
-                      delayChildren: 0.5,
-                    },
-                  },
-                },
-                ...transitionVariants,
-              }}
-              className="mb-8 flex flex-col items-center justify-center w-full"
-            >
-              <div className="w-full max-w-5xl lg:max-w-6xl">
-                <ProductSearch variant="hero" />
-              </div>
-            </AnimatedGroup>
+            
 
             {/* Action Buttons */}
             <AnimatedGroup

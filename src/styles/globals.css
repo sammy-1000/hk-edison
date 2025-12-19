@@ -151,6 +151,26 @@
   input[type="search"]::-webkit-search-results-decoration {
     -webkit-appearance: none;
   }
+
+  /* Welcome section search: make input text white */
+  .welcome-search-wrapper input[type="search"] {
+    @apply text-white placeholder:text-white/60;
+  }
+}
+
+@layer base {
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(12px);
+      filter: blur(12px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0px);
+    }
+  }
 }
 
 /*

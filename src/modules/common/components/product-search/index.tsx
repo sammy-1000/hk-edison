@@ -172,7 +172,7 @@ export default function ProductSearch({ className = "", variant = "default" }: P
 
       {/* Autocomplete Dropdown */}
       {showResults && (
-        <Card className="absolute z-50 w-full mt-2 max-h-[600px] overflow-y-auto shadow-lg border">
+        <Card className="absolute z-[80] w-full mt-2 max-h-[600px] overflow-y-auto shadow-lg border">
           <div className="p-4">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">

@@ -71,8 +71,8 @@ export default function ConditionalSearch() {
             <div className="fixed top-0 left-0 right-0 bg-background border-b shadow-lg">
               <div className="flex items-center gap-3 px-4 py-3">
                 <div className="flex-1">
-                  <ProductSearch className="w-full" variant="default" />
-                </div>
+      <ProductSearch className="w-full" variant="default" />
+    </div>
                 <Button
                   variant="ghost"
                   size="icon"
