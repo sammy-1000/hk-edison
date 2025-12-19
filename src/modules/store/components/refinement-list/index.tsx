@@ -50,7 +50,7 @@ const RefinementList = ({ sortBy, categories = [], 'data-testid': dataTestId }: 
 
   return (
     <aside className="w-full small:w-[280px] small:sticky small:top-4 small:self-start mb-8 small:mb-0">
-      <Card className="p-6 space-y-8 bg-white shadow-sm">
+      <Card className="p-4 small:p-6 space-y-6 small:space-y-8 bg-white shadow-sm">
         {/* Sort Section */}
         <div className="border-b border-gray-200 pb-6">
           <SortProducts sortBy={sortBy} setQueryParams={setQueryParams} data-testid={dataTestId} />

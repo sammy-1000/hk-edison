@@ -4,6 +4,7 @@ import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-g
 import RefinementList from "@modules/store/components/refinement-list"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import ProductSearch from "@modules/common/components/product-search"
+import MobileFilterWrapper from "./mobile-filter-wrapper"
 import { listCategories } from "@lib/data/categories"
 
 import PaginatedProducts from "./paginated-products"
@@ -36,8 +37,15 @@ const StoreTemplate = async ({
       className="flex flex-col small:flex-row small:items-start gap-6 py-6 content-container"
       data-testid="category-container"
     >
-      <RefinementList sortBy={sort} categories={categories} />
+      {/* Desktop Filters - Hidden on mobile */}
+      <aside className="hidden small:block">
+        <RefinementList sortBy={sort} categories={categories} />
+      </aside>
+
       <div className="flex-1 w-full">
+        {/* Mobile Filter Button & Drawer Wrapper */}
+        <MobileFilterWrapper sortBy={sort} categories={categories} />
+
         <div className="mb-6">
           <ProductSearch variant="default" />
         </div>
