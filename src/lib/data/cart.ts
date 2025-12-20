@@ -124,6 +124,12 @@ export async function addToCart({
     throw new Error("Missing variant ID when adding to cart")
   }
 
+  // Get the region for the country code to ensure cart region matches
+  const region = await getRegion(countryCode)
+  if (!region) {
+    throw new Error(`Region not found for country code: ${countryCode}`)
+  }
+
   const cart = await getOrSetCart(countryCode)
 
   if (!cart) {
@@ -132,6 +138,27 @@ export async function addToCart({
 
   const headers = {
     ...(await getAuthHeaders()),
+  }
+
+  // Ensure cart region matches the country code's region before adding items
+  // This is critical for price validation - the cart must be in the correct region
+  // The backend validates that variants have prices for the cart's currency
+  if (cart.region_id !== region.id) {
+    await sdk.store.cart.update(
+      cart.id,
+      { region_id: region.id },
+      {},
+      headers
+    )
+    const cartCacheTag = await getCacheTag("carts")
+    revalidateTag(cartCacheTag)
+    
+    // Retrieve the updated cart to ensure we have the latest region_id
+    const updatedCart = await retrieveCart(cart.id, 'id,region_id')
+    if (updatedCart && updatedCart.region_id === region.id) {
+      // Use the updated cart for adding line items
+      cart = updatedCart
+    }
   }
 
   await sdk.store.cart
@@ -151,7 +178,15 @@ export async function addToCart({
       const fulfillmentCacheTag = await getCacheTag("fulfillment")
       revalidateTag(fulfillmentCacheTag)
     })
-    .catch(medusaError)
+    .catch((error) => {
+      // Provide more specific error message for price-related errors
+      if (error?.response?.data?.message?.includes("do not have a price")) {
+        throw new Error(
+          `This product is not available in ${region.currency_code?.toUpperCase() || countryCode}. Please select a different product or region.`
+        )
+      }
+      medusaError(error)
+    })
 }
 
 export async function updateLineItem({
