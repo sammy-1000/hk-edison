@@ -33,10 +33,12 @@ export default function ProductActionsButtons({
             <Loader2 className="size-4 animate-spin" />
             Adding...
           </>
-        ) : inStock ? (
-          "Add to Cart"
-        ) : (
+        ) : disabled ? (
+          "Select options"
+        ) : !inStock ? (
           "Out of Stock"
+        ) : (
+          "Add to Cart"
         )}
       </Button>
       <Button

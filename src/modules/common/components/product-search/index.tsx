@@ -9,6 +9,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { HttpTypes } from "@medusajs/types"
 import { searchProducts, searchCategories } from "@lib/data/search"
 import { Card } from "@lib/components/ui/card"
+import { convertToLocale } from "@lib/util/money"
 
 type ProductSearchProps = {
   className?: string
@@ -131,15 +132,10 @@ export default function ProductSearch({ className = "", variant = "default" }: P
 
     if (!price || price === null || price === undefined) return "N/A"
 
-    try {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: currency.toUpperCase(),
-      }).format(price / 100)
-    } catch (error) {
-      // Fallback if currency code is invalid
-      return `${(price / 100)} ${currency.toUpperCase()}`
-    }
+    return convertToLocale({
+      amount: price,
+      currency_code: currency,
+    })
   }
 
   const getProductImage = (product: HttpTypes.StoreProduct) => {
@@ -237,8 +233,8 @@ export default function ProductSearch({ className = "", variant = "default" }: P
                                 {product.handle}
                               </p>
                             </div>
-                            <div className="flex-shrink-0">
-                              <p className="text-sm font-semibold">{formatPrice(product)}</p>
+                            <div className="flex-shrink-0 min-w-0">
+                              <p className="text-sm font-semibold break-words whitespace-normal">{formatPrice(product)}</p>
                             </div>
                           </div>
                         </LocalizedClientLink>

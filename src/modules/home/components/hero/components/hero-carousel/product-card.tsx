@@ -7,6 +7,7 @@ import { Badge } from '@lib/components/ui/badge'
 import { Card, CardContent } from '@lib/components/ui/card'
 import { Star, Sparkles } from 'lucide-react'
 import { useMemo } from 'react'
+import { convertToLocale } from '@lib/util/money'
 
 interface ProductCardProps {
     product: HttpTypes.StoreProduct
@@ -48,19 +49,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         const price = calculatedPrice.calculated_amount
         if (price == null || price === undefined) return 'N/A'
         
-        // Prices are stored in cents, so divide by 100
-        const priceInCurrency = price / 100
-        const currency = calculatedPrice.currency_code?.toUpperCase() || 'USD'
+        const currency = calculatedPrice.currency_code || 'USD'
         
-        try {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: currency,
-            }).format(priceInCurrency)
-        } catch (error) {
-            // Fallback if currency code is invalid
-            return `${priceInCurrency} ${currency}`
-        }
+        return convertToLocale({
+            amount: price,
+            currency_code: currency,
+        })
     }, [cheapestVariant])
 
     // Get product image
@@ -89,7 +83,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <div className="from-background/90 via-background/30 absolute inset-0 bg-gradient-to-t to-transparent" />
 
                 <div className="text-background-foreground absolute inset-0 flex flex-col justify-end p-8">
-                    <div className="relative z-10 max-w-md space-y-4">
+                    <div className="relative z-10 max-w-md space-y-4 w-full">
                         <Badge className="w-fit rounded-full">
                             {isNew ? 'Just Arrived' : 'Featured'}
                         </Badge>
@@ -102,10 +96,12 @@ export default function ProductCard({ product }: ProductCardProps) {
                             {product.description || 'Discover the latest in style and comfort with our premium collection.'}
                         </p>
 
-                        <div className="flex items-center gap-4 pt-2">
+                        <div className="flex items-center gap-4 pt-2 flex-wrap">
                             <Button
                                 size="lg"
-                                className="cursor-pointer rounded-full"
+                                wrap={true}
+                                className="cursor-pointer rounded-full break-words min-w-fit max-w-full"
+                                style={{ wordBreak: 'break-word', overflowWrap: 'break-word', whiteSpace: 'normal' }}
                                 onClick={() => window.location.href = `/products/${product.handle}`}
                             >
                                 Shop Now - {formattedPrice}

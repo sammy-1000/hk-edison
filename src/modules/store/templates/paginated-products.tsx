@@ -90,11 +90,10 @@ export default async function PaginatedProducts({
       
       if (!price) return false
       
-      const priceInCurrency = price / 100 // Convert from cents
       const min = minPrice ? parseFloat(minPrice) : 0
       const max = maxPrice ? parseFloat(maxPrice) : Infinity
       
-      return priceInCurrency >= min && priceInCurrency <= max
+      return price >= min && price <= max
     })
   }
 

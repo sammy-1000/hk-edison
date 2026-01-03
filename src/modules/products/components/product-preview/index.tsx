@@ -7,6 +7,7 @@ import { Card, CardContent } from '@lib/components/ui/card'
 import { Star, Sparkles } from 'lucide-react'
 import { useMemo } from 'react'
 import LocalizedClientLink from '@modules/common/components/localized-client-link'
+import { convertToLocale } from '@lib/util/money'
 
 interface ProductCardProps {
   product: HttpTypes.StoreProduct
@@ -49,19 +50,12 @@ export default function ProductCard({ product, region }: ProductCardProps) {
     const price = calculatedPrice.calculated_amount
     if (price == null || price === undefined) return 'N/A'
     
-    // Prices are stored in cents, so divide by 100
-    const priceInCurrency = price / 100
-    const currency = calculatedPrice.currency_code?.toUpperCase() || 'USD'
+    const currency = calculatedPrice.currency_code || 'USD'
     
-    try {
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: currency,
-      }).format(priceInCurrency)
-    } catch (error) {
-      // Fallback if currency code is invalid
-      return `${priceInCurrency} ${currency}`
-    }
+    return convertToLocale({
+      amount: price,
+      currency_code: currency,
+    })
   }, [cheapestVariant])
 
   // Get product image
@@ -102,7 +96,7 @@ export default function ProductCard({ product, region }: ProductCardProps) {
 
             {/* Price and Shop Now button */}
             <div className='flex items-center justify-between gap-2 pt-2'>
-              <p className='text-lg font-semibold sm:text-xl'>{formattedPrice}</p>
+              <p className='text-lg font-semibold sm:text-xl break-words min-w-0'>{formattedPrice}</p>
 
             </div>
           </div>
