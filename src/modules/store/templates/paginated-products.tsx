@@ -1,8 +1,6 @@
 import { listProductsWithSort } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
-import { sortProducts } from "@lib/util/sort-products"
-import ProductPreview from "@modules/products/components/product-preview"
-import { Pagination } from "@modules/store/components/pagination"
+import LoadMoreProducts from "@modules/store/components/load-more-products"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
 const PRODUCT_LIMIT = 12
@@ -103,36 +101,21 @@ export default async function PaginatedProducts({
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
   const paginatedProducts = filteredProducts
 
-  if (paginatedProducts.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-muted-foreground text-lg">No products found matching your filters.</p>
-        <p className="text-muted-foreground text-sm mt-2">Try adjusting your search criteria.</p>
-      </div>
-    )
-  }
-
   return (
-    <>
-      <ul
-        className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8"
-        data-testid="products-list"
-      >
-        {paginatedProducts.map((p) => {
-          return (
-            <li key={p.id}>
-              <ProductPreview product={p} region={region} />
-            </li>
-          )
-        })}
-      </ul>
-      {totalPages > 1 && (
-        <Pagination
-          data-testid="product-pagination"
-          page={page}
-          totalPages={totalPages}
-        />
-      )}
-    </>
+    <LoadMoreProducts
+      initialProducts={paginatedProducts}
+      initialPage={page}
+      totalPages={totalPages}
+      region={region}
+      sortBy={sortBy}
+      collectionId={collectionId}
+      categoryId={categoryId}
+      productsIds={productsIds}
+      searchQuery={searchQuery}
+      minPrice={minPrice}
+      maxPrice={maxPrice}
+      categoryIds={categoryIds}
+      countryCode={countryCode}
+    />
   )
 }
